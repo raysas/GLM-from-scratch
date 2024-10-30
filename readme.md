@@ -111,10 +111,10 @@ $\hat \beta = (X^TX)^{-1}X^Ty$ is true $iff$ $X^TX$ is invertible, and $X$ is fu
 
 To deal with 1, use _regularization_ (L1, L2, elastic net), or _dimensionality reduction_ (PCA), or _feature selection_ (backward, forward, stepwise selection).
 
-To deal with the 2nd case, we can either remove colinear predictors or (do smtg else i forgot what). When X is not full rank, then it has to have a null eigenvalue. Interestingly, in practice we might have a predictor that is close to being a linear combination of other predictors (but not exactly), in this case none of the eigenvalues is 0 (it's full rank) but we notice some multicollinearity. To test for it we can use:  
-- comparing ratio betweenn the largest and smallest eigenvalues, if it's very large, then we have multicollinearity, ther eis no stat test to check if it's significantly greater than 0 but some empirical values are used to check for it like 500 or 1000 (arbitrary threshold); thus when ration is greater than this value, we have strong colinearity.  
+To deal with the 2nd case, we can either remove colinear predictors or (do smtg else i forgot what). When X is not full rank than some predictors are linearly dependent on the others. Interestingly, in practice we might have a predictor that is close to being a linear combination of other predictors (but not exactly), in this case to test for multicollinearity we can:    
+- comparing ratio between the largest and smallest eigenvalues of teh corr matrix R (the smallest eigenvalue is 0 when it's not full rank), if it's very large, then we have multicollinearity, there is no stat test to check if it's significantly greater than 0 but some empirical values are used to check for it like 500 or 1000 (arbitrary threshold); thus when ration is greater than this value, we have strong colinearity.  
 - perform several Linear regressions between preductors and check the $R^2$ values, if they are close to 1. i.e., try to explain one predictor with the others, the model that shows a near 1 $R^2$ means that this predictor is very well explained by the others, it's a linear combination of them thus it's a good candidate to be removed. (e.g., explain x1 by x2 & x3, then x2 by x1 & x3, then x3 by x1 & x2, check for $R^2$ values)   
-VIF (Variance Inflation Factor) is used here, as $VIF = \frac{1}{1-R^2}$, when $R^2 \approx 1$, then $VIF \approx \infty$, and when $R^2 \approx 0$, then $VIF \approx 1$
+VIF (Variance Inflation Factor) is used here, as $VIF = \frac{1}{1-R^2}$, when $R^2 \approx 1$, then $VIF \approx \infty$, and when $R^2 \approx 0$, then $VIF \approx 1$ (compute a VIF for each predictor)
 
 _But what is $R^2$?_
 
