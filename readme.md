@@ -75,13 +75,13 @@ _A refresher on some distributions_
     - The $\frac{1}{\sqrt{2\pi\sigma^2}}$ term is the normalization constant, it ensures that the distribution is indeed a probability density function, i.e. $\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx = \sqrt{2\pi\sigma^2}$, and multiplying by the $\frac{1}{\sqrt{2\pi\sigma^2}}$ term ensures that the area under the curve is one ($\int_{-\infty}^{\infty} f(x)dx = 1$)
 
 
-        | x        | $-\inf$ | $\mu - \sigma$ | $\mu$ | $\mu + \sigma$ | $+\inf$ |
+        | x        | $-\infty$ | $\mu - \sigma$ | $\mu$ | $\mu + \sigma$ | $+\infty$ |
         |----------|---------|----------------|-------|----------------|---------|
         | f(x)     | 0       | less than max  | max   | less than max  | 0       |
         | f'(x)    | +       |      +         | 0     |      -         | -       |
         | f''(x)   | -       |      0         | +     |      0         | -       |
 
-    ![normal dist](./assets/gaussian.png)
+![normal dist](./assets/gaussian.png)
 - The _binomial distribution_ is characterized by the probability mass function $f(y) = \binom{n}{y}p^y(1-p)^{n-y}$, where $n$ is the number of trials, $y$ is the number of successes, and $p$ is the probability of success. The binomial distribution is used to model the _number of successes_ in a _fixed number of trials_ 
 - The _poisson distribution_ is characterized by the probability mass function $f(y) = \frac{\lambda^y}{y!}e^{-\lambda}$, where $\lambda$ is the average number of events (also std. dev.) in a fixed interval of time. The poisson distribution is used to model the _number of events_ in a _fixed interval of time_
 
