@@ -80,86 +80,17 @@ $\iff$ minimize the sum of squared residuals (same as OLS).
 
 
 
-### _Generalized Linear Models (GLM):_
+### Generalized Linear Models (GLM):
 
 Generalized Linear Models (GLM) are a class of models including linear, logistic and poisson regression, among others. These are generalizations of the linear model, following one of the exponential family distribution.  
 The aim of these models is to model the relationship between the response variable $y$ ( a $(n \times 1)$ column vector) and the predictors $X$ ( a $(n \times p)$ matrix representing $p$ predictors), and to make predictions based on this relationship.  
-Hence, the model is defined as $y = f(X\beta) + \epsilon$, where $f$ is a link function, $\beta$ is a $(p \times 1)$ column vector of coefficients, and $\epsilon$ is the error term. What we're looking for is $\hat y$, the predicted value of $y$ given $X$ and $\beta$, such that $\hat y = f(X\beta)$, this is also denoted as $E(y|X,\beta)$, the expected value of $y$ given $X$ and $\beta$
+Hence, the model is defined as $y = f(X\beta) + \epsilon$, where $f$ is a link function, $\beta$ is a $(p \times 1)$ column vector of coefficients, and $\epsilon$ is the error term. What we're looking for is $\hat y$, the predicted value of $y$ given $X$ and $\beta$, such that $\hat y = f(X\beta)$, this is also denoted as $E(y|X,\beta)$, the expected value of $y$ given $X$ and $\beta$.  
 
-In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be normally distributed, indpendent and homoscedastic: $\epsilon \sim N(0, \sigma^2)$. The linear model is a special case of the GLM, where the response variable follows a gaussian distribution.   
-
-
-### _Link functions and loss functions:_  
-
-What distinguishes GLM from the linear model is the ___link function___ that connects the linear predictor to the expected value of the response variable.  
-The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
-The link function is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _Bernoulli distribution_, the link function is the _logit function_.
-
-| LM | GLM |
-|----|-----|
-| $\mu_i = X_i^T\beta$ ($g(\mu_i)=\mu_i$) | $g(\mu_i) = X_i^T\beta$ |
-
-![link function](./assets/linkfunc.png)
-
-This link function hass to be ___monotonic___ (so that the relationship between the predictors and the response variable is preserved),
-___differentiable___ (so that we can estimate the coefficients of the model),
-and ___invertible___ (so that we can get back to the mean from the linear predictor).
-
-In the case of binary regression, it's the Bernoulli distribution with some probability p:  
-$y_i \sim Bernoulli(p)$, $E(y_i) = \mu_i = p_i$, and we want p to be between 0 and 1, so the most common link function is the _logit function_ $logit(\mu_i) = log(\frac{\mu_i}{1-\mu_i}) = X_i^T\beta$;  where $\mu_i \in [0,1]$, $logit(\mu_i) \in \mathbb{R}$
-$\iff \frac{\mu_i}{1-\mu_i} = e^{X_i^T\beta}$,   
-$\iff \mu_i = \frac{e^{X_i^T\beta}}{1+e^{X_i^T\beta}} = \frac{1}{1+e^{-X_i^T\beta}}$    
-$\iff \mu_i = \sigma(X_i^T\beta)$, where $\sigma$ is the sigmoid function.  
-
-a link function is not a transformation of the response variable, only the $\mu$ is tranformed.
-
-
-
-Another important concept in GLM is the ___loss function___, which is a function that measures the difference between the predicted value and the actual value of the response variable. The loss function is used to estimate the coefficients of the model by minimizing the difference between the predicted value and the actual value of the response variable. It's usually chosen based on the distribution of $y$, for example, in the case of the _gaussian distribution_, the loss function is the _squared error function_, while for the _binomial distribution_, the loss function is the _log loss function_ (not going to dive deep in it, but it's the negative log likelihood of the observed data given the model).  This is seen in the MLE problem where we want to maximize the likelihood of the observed data given the model, which is equivalent to minimizing the loss function.
-
-In each model, the coefficients are estimated by minimizing the loss function. The linear model uses _Ordinary Least Squares_ (OLS) to estimate the coefficients, while the logistic and poisson models use _Maximum Likelihood Estimation_ (MLE) to estimate the coefficients. The coefficients are estimated by maximizing the likelihood of the observed data given the model. The ***likelihood*** is a function of the coefficients and is maximized by finding the coefficients that maximize the likelihood of the observed data.   
-So our goal is to get the $\beta$ that optimizes the performance of the model, i.e. minimizes the loss function or maximizes the likelihood function. (_loss function is the negative log likelihood_)
-
-### _Evaluating the model:_  
-
-An important aspect of building a GLM is to understand the statistical properties of the model, like _residuals_, _deviance_, and _confidence intervals_.  
-Evaluating the performance of a model, we often care to see which predictors are significant, and which are not. This is done by performing _hypothesis tests_ on the coefficients of the model.  
-
-We can compare between models and nested models by _anova_ which comes to compare the deviance of the models. The _deviance_ is a measure of the goodness of fit of the model and is used to compare the performance of different models. Other measures of goodness of fit include the _AIC_ and _BIC_, and even $R^2$, _odd ratios_, and _incident rate ratios_ are used to evaluate the performance of the model.
-
-### _unibiased estimators:_  
-The idea of bias comes from something in this example:  
-If we take $\hat \mu$ (the mean) as estimator of $\mu$, for some observations we will have $\hat \mu \gt \mu$ (overestimating) and for others $\hat \mu \lt \mu$ (underestimating), but avergaing on large sets of observations we expect $\hat \mu = \mu$, so the estimator is unbiased, "unbiased estimator does not systematically over- or under-estimate the true parameter"  (ISLR). This property holds in least squares, where coefficients are unbiased estimators of the true coefficients, estimating coef on one dataset wont make our estimates exactly equal to the true values, but averaging on large sets of datasets will make them equal.
-
-
-_Some other important concepts in GLM are:_
-
-### Probability distributions
-
-_A refresher on some distributions_
-
-- The _gaussian distribution_ is characterized by the probability density function $f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$, where $\mu$ is the mean and $\sigma^2$ is the variance. Here is a breakdown of this function because it's very nice to look at; ([source](https://youtu.be/UVvuwv-ne1I?si=z6PAEIGR1uOdMoG9)):  
-    - The $e^{-\frac{1}{2}}$ term gives it its shape, it's a bell curve. The exponent is negative, so that the curve is concave down (particularly at $\mu ± \sigma$, this is why the 2 is added in denominator to scale it here instead of 2 times this value - check other elements of the exponent), and the $e$ is there to make it positive, so that the curve is always positive.  
-    - The $(x-\mu)^2$ term is the exponent centered around the mean $\mu$  
-    - The $\sigma^2$ term in the denominator of the exponent is the variance to make it evenly distributed, and controls the spread of the curve, it's put in the denominator because the exponent is negative, this the variance becomes directly proportional to the spread of the curve   
-    - The $\frac{1}{\sqrt{2\pi\sigma^2}}$ term is the normalization constant, it ensures that the distribution is indeed a probability density function, i.e. $\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx = \sqrt{2\pi\sigma^2}$, and multiplying by the $\frac{1}{\sqrt{2\pi\sigma^2}}$ term ensures that the area under the curve is one ($\int_{-\infty}^{\infty} f(x)dx = 1$)
-
-
-        | x        | $-\infty$ | $\mu - \sigma$ | $\mu$ | $\mu + \sigma$ | $+\infty$ |
-        |----------|---------|----------------|-------|----------------|---------|
-        | f(x)     | 0       | less than max  | max   | less than max  | 0       |
-        | f'(x)    | +       |      +         | 0     |      -         | -       |
-        | f''(x)   | +       |      0         | -     |      0         | +       |
-
-![normal dist](./assets/gaussian.png)
-- The _binomial distribution_ is characterized by the probability mass function $f(y) = \binom{n}{y}p^y(1-p)^{n-y}$, where $n$ is the number of trials, $y$ is the number of successes, and $p$ is the probability of success. The binomial distribution is used to model the _number of successes_ in a _fixed number of trials_ 
-- The _poisson distribution_ is characterized by the probability mass function $f(y) = \frac{\lambda^y}{y!}e^{-\lambda}$, where $\lambda$ is the average number of events (also std. dev.) in a fixed interval of time. The poisson distribution is used to model the _number of events_ in a _fixed interval of time_
-
-_note on density vs mass_:  
-- A _probability density function_ is a function that describes the likelihood of a **continuous** random variable taking on a particular value. The area under the curve of a probability density function =1    
-- A _probability mass function_ is a function that describes the likelihood of a **discrete** random variable taking on a particular value. The sum of the probabilities of all possible values of a discrete random variable =1
+The parameters of the model are estimated by maximizing the likelihood of the observed data given the model. The likelihood is a function of the coefficients and is maximized by differentiating and equating to 0. This is equivalent to minimizing the loss function, which is a function that measures the difference between the predicted value and the actual value of the response variable (litteraly, negative log likelihood). The model is usually evaluated by deviance, a measure of the goodness of fit of the model and is used to compare the performance of different models.
 
 ### Linear Models, Least Squares, and Residuals
+
+In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be normally distributed, indpendent and homoscedastic: $\epsilon \sim N(0, \sigma^2)$. The linear model is a special case of the GLM, where the response variable follows a gaussian distribution.  
 
 The least squares approach allows to get the $\hat y$ that minimizes the distance between $y$ and $X\beta$ (the projection of $y$ onto the space of $X\beta$).   
 The _residuals_ are the difference between the observed value of the response variable and the predicted value of the response variable, $e = y - \hat y$. The residuals are used to evaluate the performance of the model and to make predictions based on it.  
@@ -201,6 +132,87 @@ The maximum likelihood is an optimization problem revolving around maximizing th
 In other words having $f(y_i|\mu_i)$, the probability of observing $y_i$ given $\mu_i$ with $f$ being the distribution, and $\mu_i = X_i^T\beta$, the probability of observing $y_i$ given $X_i$ and $\beta$, the likelihood of observing the data is $L = \prod_{i=1}^{n} f(y_i|\mu_i)$, we want to maximize $L$ to get the $\beta$ that best explains the data.  
 This product is usually hard to work with, so we take the log likelihood, $l = \sum_{i=1}^{n} log(f(y_i|\mu_i))$, and we want to maximize this quantity.  
 In the case of the _gaussian distribution_, the log likelihood is $l = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ is equivalent the OLS problem, making this a generalized approach for different types of distributions.
+
+
+### Link functions and loss functions: 
+
+What distinguishes GLM from the linear model is the ___link function___ that connects the linear predictor to the expected value of the response variable.  
+The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
+The link function is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _Bernoulli distribution_, the link function is the _logit function_.
+
+| LM | GLM |
+|----|-----|
+| $\mu_i = X_i^T\beta$ | $g(\mu_i) = X_i^T\beta$ |
+
+![link function](./assets/linkfunc.png)
+
+This link function hass to be ___monotonic___ (so that the relationship between the predictors and the response variable is preserved),
+___differentiable___ (so that we can estimate the coefficients of the model),
+and ___invertible___ (so that we can get back to the mean from the linear predictor).
+
+In the case of binary regression, it's the Bernoulli distribution with some probability p:  
+$y_i \sim Bernoulli(p)$, $E(y_i) = \mu_i = p_i$, and we want p to be between 0 and 1, so the most common link function is the _logit function_ $logit(\mu_i) = log(\frac{\mu_i}{1-\mu_i}) = X_i^T\beta$;  where $\mu_i \in [0,1]$, $logit(\mu_i) \in \mathbb{R}$
+$\iff \frac{\mu_i}{1-\mu_i} = e^{X_i^T\beta}$,   
+$\iff \mu_i = \frac{e^{X_i^T\beta}}{1+e^{X_i^T\beta}} = \frac{1}{1+e^{-X_i^T\beta}}$    
+$\iff \mu_i = \sigma(X_i^T\beta)$, where $\sigma$ is the sigmoid function.  
+
+a link function is not a transformation of the response variable, only the $\mu$ is tranformed.
+
+| Distribution | Link function name | Mathematical expression | prediction | $y \in$ |
+|--------------|--------------|--|--|--|
+| Gaussian     | Identity     | $g(\mu_i) = \mu_i$ | $\mu_i = X_i^T\beta$ | $\mathbb{R}$ (continuous) |
+| Bernoulli    | Logit        | $g(\mu_i) = log(\frac{\mu_i}{1-\mu_i})$ | $\mu_i = \frac{1}{1+e^{-X_i^T\beta}}$ | $\{0,1\}$ (discrete) |
+| Poisson      | Log          | $g(\mu_i) = log(\mu_i)$ | $\mu_i = e^{X_i^T\beta}$ |   $\mathbb{N}$ (discrete) |
+
+
+
+
+
+Another important concept in GLM is the ___loss function___, which is a function that measures the difference between the predicted value and the actual value of the response variable. The loss function is used to estimate the coefficients of the model by minimizing the difference between the predicted value and the actual value of the response variable. It's usually chosen based on the distribution of $y$, for example, in the case of the _gaussian distribution_, the loss function is the _squared error function_, while for the _binomial distribution_, the loss function is the _log loss function_ (not going to dive deep in it, but it's the negative log likelihood of the observed data given the model).  This is seen in the MLE problem where we want to maximize the likelihood of the observed data given the model, which is equivalent to minimizing the loss function.
+
+In each model, the coefficients are estimated by minimizing the loss function. The linear model uses _Ordinary Least Squares_ (OLS) to estimate the coefficients, while the logistic and poisson models use _Maximum Likelihood Estimation_ (MLE) to estimate the coefficients. The coefficients are estimated by maximizing the likelihood of the observed data given the model. The ***likelihood*** is a function of the coefficients and is maximized by finding the coefficients that maximize the likelihood of the observed data.   
+So our goal is to get the $\beta$ that optimizes the performance of the model, i.e. minimizes the loss function or maximizes the likelihood function. (_loss function is the negative log likelihood_)
+
+### _Evaluating the model:_  
+
+An important aspect of building a GLM is to understand the statistical properties of the model, like _residuals_, _deviance_, and _confidence intervals_.  
+Evaluating the performance of a model, we often care to see which predictors are significant, and which are not. This is done by performing _hypothesis tests_ on the coefficients of the model.  
+
+We can compare between models and nested models by _anova_ which comes to compare the deviance of the models. The _deviance_ is a measure of the goodness of fit of the model and is used to compare the performance of different models. Other measures of goodness of fit include the _AIC_ and _BIC_, and even $R^2$, _odd ratios_, and _incident rate ratios_ are used to evaluate the performance of the model.
+
+### _Unbiased estimators:_  
+The idea of bias comes from something in this example:  
+If we take $\hat \mu$ (the mean) as estimator of $\mu$, for some observations we will have $\hat \mu \gt \mu$ (overestimating) and for others $\hat \mu \lt \mu$ (underestimating), but avergaing on large sets of observations we expect $\hat \mu = \mu$, so the estimator is unbiased, "unbiased estimator does not systematically over- or under-estimate the true parameter"  (ISLR). This property holds in least squares, where coefficients are unbiased estimators of the true coefficients, estimating coef on one dataset wont make our estimates exactly equal to the true values, but averaging on large sets of datasets will make them equal.
+
+
+_Some other important concepts in GLM are:_
+
+### Probability distributions
+
+_A refresher on some distributions_
+
+- The _gaussian distribution_ is characterized by the probability density function $f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$, where $\mu$ is the mean and $\sigma^2$ is the variance. Here is a breakdown of this function because it's very nice to look at; ([source](https://youtu.be/UVvuwv-ne1I?si=z6PAEIGR1uOdMoG9)):  
+    - The $e^{-\frac{1}{2}}$ term gives it its shape, it's a bell curve. The exponent is negative, so that the curve is concave down (particularly at $\mu ± \sigma$, this is why the 2 is added in denominator to scale it here instead of 2 times this value - check other elements of the exponent), and the $e$ is there to make it positive, so that the curve is always positive.  
+    - The $(x-\mu)^2$ term is the exponent centered around the mean $\mu$  
+    - The $\sigma^2$ term in the denominator of the exponent is the variance to make it evenly distributed, and controls the spread of the curve, it's put in the denominator because the exponent is negative, this the variance becomes directly proportional to the spread of the curve   
+    - The $\frac{1}{\sqrt{2\pi\sigma^2}}$ term is the normalization constant, it ensures that the distribution is indeed a probability density function, i.e. $\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx = \sqrt{2\pi\sigma^2}$, and multiplying by the $\frac{1}{\sqrt{2\pi\sigma^2}}$ term ensures that the area under the curve is one ($\int_{-\infty}^{\infty} f(x)dx = 1$)
+
+
+        | x        | $-\infty$ | $\mu - \sigma$ | $\mu$ | $\mu + \sigma$ | $+\infty$ |
+        |----------|---------|----------------|-------|----------------|---------|
+        | f(x)     | 0       | less than max  | max   | less than max  | 0       |
+        | f'(x)    | +       |      +         | 0     |      -         | -       |
+        | f''(x)   | +       |      0         | -     |      0         | +       |
+
+![normal dist](./assets/gaussian.png)
+- The _binomial distribution_ is characterized by the probability mass function $f(y) = \binom{n}{y}p^y(1-p)^{n-y}$, where $n$ is the number of trials, $y$ is the number of successes, and $p$ is the probability of success. The binomial distribution is used to model the _number of successes_ in a _fixed number of trials_ 
+- The _poisson distribution_ is characterized by the probability mass function $f(y) = \frac{\lambda^y}{y!}e^{-\lambda}$, where $\lambda$ is the average number of events (also std. dev.) in a fixed interval of time. The poisson distribution is used to model the _number of events_ in a _fixed interval of time_
+
+_note on density vs mass_:  
+- A _probability density function_ is a function that describes the likelihood of a **continuous** random variable taking on a particular value. The area under the curve of a probability density function =1    
+- A _probability mass function_ is a function that describes the likelihood of a **discrete** random variable taking on a particular value. The sum of the probabilities of all possible values of a discrete random variable =1
+
+
 
 ### Exponential Family
 
