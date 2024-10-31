@@ -1,17 +1,19 @@
 # Generalized Linear Models library from scratch
 
 This is a python implementation of _Generalized Linear Models_ inspired by the theoretical material taken in a _Multivariate Statistics_ course and built based on _object-oriented programming_ design principles. Sources:  
-- [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) by Hastie, Tibshirani, and Friedman  
-- [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) by James, Witten, Hastie, and Tibshirani
-- [Introduction to Generalized Linear Models]() by Dobson and Barnett   
-- [Linear Models with R]() by Faraway   
-- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) by Meerkat Statstics on youtube
+- [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) textbook by Hastie, Tibshirani, and Friedman  
+- [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) textbook by James, Witten, Hastie, and Tibshirani
+- [Introduction to Generalized Linear Models]() textbook by Dobson and Barnett   
+- [Linear Models with R]() textbook by Faraway   
+- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics
 
 ## Design
 
 ### Directory Structure
 
-The library is structured in the following way:
+_under construction_
+
+<!-- The library is structured in the following way:
 ```text
 GLM-from-scratch/
 │
@@ -31,7 +33,7 @@ GLM-from-scratch/
 ├── .gitignore
 ├── LICENSE
 └── README.md   
-```
+``` -->
 
 ### UML Diagram
 
@@ -39,18 +41,20 @@ _under construction_
 
 ## Some theory and concepts
 
+_beware some math and stats ahead :p_
+
 ### Main ideas:
 
 Linear models were concieved originally by Gauss in the aim of finding a relationship between a response variable $y$ and explanatory variables $X$. This was based on 3 assumptions:  
 - $y$ are independent
-- $y$ are normally distributed with a mean $\mu so $y_i \sim N(\mu_i, \sigma^2)$  
+- $y$ are normally distributed with a mean $\mu$ so $y_i \sim N(\mu_i, \sigma^2)$  
 - $\mu_i = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a linear model (linear in the parameters $\beta$, the $X$ can be transformed)
 
-Then came the _Generalized Linear Models_ (GLM) that are a generalization of the linear model, where the response variable $y$ follows a distribution from the _exponential family_ (gaussian, binomial, poisson, gamma, etc.). As is the case in linear models, the aim of these models is to model the relationship between the response variable $y$ and the predictors $X$, and to make predictions based on this relationship. Here there are some few generalizations:  
+Then came the _[Generalized Linear Models](#generalized-linear-models-glm)_ (GLM) that are a generalization of the linear model, where the response variable $y$ follows a distribution from the _[exponential family](#exponential-family)_ (gaussian, binomial, poisson, gamma, etc.). As is the case in linear models, the aim of these models is to model the relationship between the response variable $y$ and the predictors $X$, and to make predictions based on this relationship. Here there are some few generalizations:  
 - $y_i \sim exponentional\ family$  
-- $g(\mu_i) = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a link function $g$ (not necessarily linear, logit, log, inverse...).  
+- $g(\mu_i) = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a [link function](#link-functions-and-loss-functions) $g$ (not necessarily linear, logit, log, inverse...).  
 
-In regular linear models, can use _Least Squares_ or _Maximum Likelihood Estimation_ to estimate the coefficients $\beta$ (they are exactly the same in a normal distribution. In GLM only Maximum Likelihood - can think of OLS as a special case)
+In regular linear models, can use _[Least Squares](#linear-models-least-squares-and-residuals)_ or _[Maximum Likelihood Estimation](#maximum-likelihood-estimation)_ to estimate the coefficients $\beta$ (they are exactly the same in a normal distribution. In GLM only Maximum Likelihood - can think of OLS as a special case)
 
 | Linear Model | Generalized Linear Model |
 |--------------|---------------------------|
@@ -59,8 +63,8 @@ In regular linear models, can use _Least Squares_ or _Maximum Likelihood Estimat
 | solved by OLS and MLE | solved by MLE |
 
 In linear models, estimating the parameters come from solving one of these optimization problems:  
-- **Least Squares**: Optimization problem where we wanna minimize the sum of squared residuals, $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$, where $\hat y_i = X_i^T\beta$; solved by differentiating and equating to 0. 
-- **Maximum Likelihood**: Assuming some distribution on $y$, in LM $y \sim N(\mu, \sigma^2)$, where $\mu_i = X_i^T\beta$ sometimes $\mu_i$ will be above and sometimes below the line.  
+- **[Least Squares](#linear-models-least-squares-and-residuals)**: Optimization problem where we wanna minimize the sum of squared residuals, $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$, where $\hat y_i = X_i^T\beta$; solved by differentiating and equating to 0. 
+- **[Maximum Likelihood](#maximum-likelihood-estimation)**: Assuming some distribution on $y$, in LM $y \sim N(\mu, \sigma^2)$, where $\mu_i = X_i^T\beta$ sometimes $\mu_i$ will be above and sometimes below the line.  
 Probability of obtaining that $y_i$ is $ \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}}$, we want to maximize this probability (choose the $\beta's$ that do), so we take the log likelihood, it's be a ***sum*** of the logs:  
 $l(\beta) = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}})= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$  
 The goal is to maximize this quantity  
@@ -197,3 +201,7 @@ The maximum likelihood is an optimization problem revolving around maximizing th
 In other words having $f(y_i|\mu_i)$, the probability of observing $y_i$ given $\mu_i$ with $f$ being the distribution, and $\mu_i = X_i^T\beta$, the probability of observing $y_i$ given $X_i$ and $\beta$, the likelihood of observing the data is $L = \prod_{i=1}^{n} f(y_i|\mu_i)$, we want to maximize $L$ to get the $\beta$ that best explains the data.  
 This product is usually hard to work with, so we take the log likelihood, $l = \sum_{i=1}^{n} log(f(y_i|\mu_i))$, and we want to maximize this quantity.  
 In the case of the _gaussian distribution_, the log likelihood is $l = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ is equivalent the OLS problem, making this a generalized approach for different types of distributions.
+
+### Exponential Family
+
+### Regularization
