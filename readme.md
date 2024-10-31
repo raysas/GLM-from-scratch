@@ -37,14 +37,54 @@ _uunder construction_
 
 ## Some theory and concepts
 
-Generalized Linear Models (GLM) are a class of models including linear, logistic and poisson regression, among others. These are generalizations of the linear model, following one of the exponential family distribution (gaussian, binomial or poisson).  
+### Main ideas:
+
+Linear models were concieved originally by Gauss in the aim of finding a relationship between a response variable $y$ and explanatory variables $X$. This was based on 3 assumptions:  
+- $y$ are independent
+- $y$ are normally distributed with a mean $\mu so $y_i \sim N(\mu_i, \sigma^2)$  
+- $\mu_i = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a linear model (linear in the parameters $\beta$, the $X$ can be transformed)
+
+Then came the _Generalized Linear Models_ (GLM) that are a generalization of the linear model, where the response variable $y$ follows a distribution from the _exponential family_ (gaussian, binomial, poisson, gamma, etc.). As is the case in linear models, the aim of these models is to model the relationship between the response variable $y$ and the predictors $X$, and to make predictions based on this relationship. Here there are some few generalizations:  
+- $y_i \sim exponentional\ family$  
+- $g(\mu_i) = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a link function $g$ (not necessarily linear, logit, log, inverse...).  
+
+In regular linear models, can use _Least Squares_ or _Maximum Likelihood Estimation_ to estimate the coefficients $\beta$ (they are exactly the same in a normal distribution. In GLM only Maximum Likelihood - can think of OLS as a special case)
+
+| Linear Model | Generalized Linear Model |
+|--------------|---------------------------|
+| $y_i \sim N(\mu_i, \sigma^2)$ | $y_i \sim Exponential\ family$ |
+| $\mu_i = X_i^T\beta$ | $g(\mu_i) = X_i^T\beta$ |
+| solved by OLS and MLE | solved by MLE |
+
+
+**Least Squares**: Optimization problem where we wanna minimize the sum of squared residuals, $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$, where $\hat y_i = X_i^T\beta$; solved by differentiating and equating to 0.  
+**Maximum Likelihood**: Assuming some distribution on $y$, in LM $y \sim N(\mu, \sigma^2)$, where $\mu_i = X_i^T\beta$ sometimes $\mu_i$ will be above and sometimes below the line.  
+Probability of obtaining that $y_i$ is $ \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}}$, we want to maximize this probability (choose the $\beta's$ that do), so we take the log likelihood, it's be a ***sum*** of the logs:  
+$l(\beta) = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}})= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$, so the goal is to maximize this quantity  
+$\iff$ maximize $- \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ WHICH IS  
+$\iff$ minimize $\sum_{i=1}^{n} (y_i - \mu_i)^2$  
+$\iff$ minimize the sum of squared residuals (same as OLS).
+
+In linear models: 
+
+| Least Squares | Maximum Likelihood |
+|---------------|--------------------|
+| $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$ | $max \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ |
+
+![ML in LM](./assets/max_likelihood.png)
+
+
+
+### _Generalized Linear Models (GLM):_
+
+Generalized Linear Models (GLM) are a class of models including linear, logistic and poisson regression, among others. These are generalizations of the linear model, following one of the exponential family distribution.  
 The aim of these models is to model the relationship between the response variable $y$ ( a $(n \times 1)$ column vector) and the predictors $X$ ( a $(n \times p)$ matrix representing $p$ predictors), and to make predictions based on this relationship.  
 Hence, the model is defined as $y = f(X\beta) + \epsilon$, where $f$ is a link function, $\beta$ is a $(p \times 1)$ column vector of coefficients, and $\epsilon$ is the error term. What we're looking for is $\hat y$, the predicted value of $y$ given $X$ and $\beta$, such that $\hat y = f(X\beta)$, this is also denoted as $E(y|X,\beta)$, the expected value of $y$ given $X$ and $\beta$
 
 In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be normally distributed, indpendent and homoscedastic: $\epsilon \sim N(0, \sigma^2)$. The linear model is a special case of the GLM, where the response variable follows a gaussian distribution.   
 
 
-_Link functions and loss functions:_  
+### _Link functions and loss functions:_  
 
 What distinguishes GLM from the linear model is the ___link function___ that connects the linear predictor to the expected value of the response variable.  
 The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
@@ -55,12 +95,17 @@ Another important concept in GLM is the ___loss function___, which is a function
 In each model, the coefficients are estimated by minimizing the loss function. The linear model uses _Ordinary Least Squares_ (OLS) to estimate the coefficients, while the logistic and poisson models use _Maximum Likelihood Estimation_ (MLE) to estimate the coefficients. The coefficients are estimated by maximizing the likelihood of the observed data given the model. The ***likelihood*** is a function of the coefficients and is maximized by finding the coefficients that maximize the likelihood of the observed data.   
 So our goal is to get the $\beta$ that optimizes the performance of the model, i.e. minimizes the loss function or maximizes the likelihood function.
 
-_Evaluating the model:_  
+### _Evaluating the model:_  
 
 An important aspect of building a GLM is to understand the statistical properties of the model, like _residuals_, _deviance_, and _confidence intervals_.  
 Evaluating the performance of a model, we often care to see which predictors are significant, and which are not. This is done by performing _hypothesis tests_ on the coefficients of the model.  
 
 We can compare between models and nested models by _anova_ which comes to compare the deviance of the models. The _deviance_ is a measure of the goodness of fit of the model and is used to compare the performance of different models. Other measures of goodness of fit include the _AIC_ and _BIC_, and even $R^2$, _odd ratios_, and _incident rate ratios_ are used to evaluate the performance of the model.
+
+### _unibiased estimators:_  
+The idea of bias comes from something in this example:  
+If we take $\hat \mu$ (the mean) as estimator of $\mu$, for some observations we will have $\hat \mu \gt \mu$ (overestimating) and for others $\hat \mu \lt \mu$ (underestimating), but avergaing on large sets of observations we expect $\hat \mu = \mu$, so the estimator is unbiased, "unbiased estimator does not systematically over- or under-estimate the true parameter"  (ISLR). This property holds in least squares, where coefficients are unbiased estimators of the true coefficients, estimating coef on one dataset wont make our estimates exactly equal to the true values, but averaging on large sets of datasets will make them equal.
+
 
 _Some other important concepts in GLM are:_
 
@@ -89,7 +134,7 @@ _note on density vs mass_:
 - A _probability density function_ is a function that describes the likelihood of a **continuous** random variable taking on a particular value. The area under the curve of a probability density function =1    
 - A _probability mass function_ is a function that describes the likelihood of a **discrete** random variable taking on a particular value. The sum of the probabilities of all possible values of a discrete random variable =1
 
-### Least Squares
+### Linear Models, Least Squares, and Residuals
 
 The least squares approach allows to get the $\hat y$ that minimizes the distance between $y$ and $X\beta$ (the projection of $y$ onto the space of $X\beta$).   
 The _residuals_ are the difference between the observed value of the response variable and the predicted value of the response variable, $e = y - \hat y$. The residuals are used to evaluate the performance of the model and to make predictions based on it.  
@@ -112,7 +157,7 @@ $\hat \beta = (X^TX)^{-1}X^Ty$ is true $iff$ $X^TX$ is invertible, and $X$ is fu
 To deal with 1, use _regularization_ (L1, L2, elastic net), or _dimensionality reduction_ (PCA), or _feature selection_ (backward, forward, stepwise selection).
 
 To deal with the 2nd case, we can either remove colinear predictors or (do smtg else i forgot what). When X is not full rank than some predictors are linearly dependent on the others. Interestingly, in practice we might have a predictor that is close to being a linear combination of other predictors (but not exactly), in this case to test for multicollinearity we can:    
-- comparing ratio between the largest and smallest eigenvalues of teh corr matrix R (the smallest eigenvalue is 0 when it's not full rank), if it's very large, then we have multicollinearity, there is no stat test to check if it's significantly greater than 0 but some empirical values are used to check for it like 500 or 1000 (arbitrary threshold); thus when ration is greater than this value, we have strong colinearity.  
+- comparing ratio between the largest and smallest eigenvalues of the corr matrix R (the smallest eigenvalue is 0 when it's not full rank), if it's very large, then we have multicollinearity, there is no stat test to check if it's significantly greater than 0 but some empirical values are used to check for it like 500 or 1000 (arbitrary threshold); thus when ration is greater than this value, we have strong colinearity.  
 - perform several Linear regressions between preductors and check the $R^2$ values, if they are close to 1. i.e., try to explain one predictor with the others, the model that shows a near 1 $R^2$ means that this predictor is very well explained by the others, it's a linear combination of them thus it's a good candidate to be removed. (e.g., explain x1 by x2 & x3, then x2 by x1 & x3, then x3 by x1 & x2, check for $R^2$ values)   
 VIF (Variance Inflation Factor) is used here, as $VIF = \frac{1}{1-R^2}$, when $R^2 \approx 1$, then $VIF \approx \infty$, and when $R^2 \approx 0$, then $VIF \approx 1$ (compute a VIF for each predictor)
 
@@ -124,3 +169,10 @@ $TSS = \sum_{i=1}^{n} (y_i - \bar y)^2$, where $\bar y$ is the mean of the respo
 ![orthogonal projraction](./assets/Rsq-projection.png)  
 
 - Adjusted $R^2$: penalizes the $R^2$ for the number of predictors in the model, $R^2_{adj} = 1 - \frac{RSS/(n-p-1)}{TSS/(n-1)}$, where $p$ is the number of predictors in the model. When the number of predictors increases, the $R^2$ also increases, even if the predictors are not significant. It's mainly used to compare the performance of models with different numbers of predictors.
+
+### Maximum Likelihood Estimation
+
+The maximum likelihood is an optimization problem revolving around maximizing the likelihood of the observed data given the model. "Likelihood" is a term often used in tandem with "probability", but they are not the same. By defintion, the likelihood is a measure of how well a statistical model explains the observed data. In here this optimization problem is about maximizing the probability of observing the data to estimate the parameters given that it follows a particular distribution, with the assumption that the data is independent and identically distributed (i.i.d).  
+In other words having $f(y_i|\mu_i)$, the probability of observing $y_i$ given $\mu_i$ with $f$ being the distribution, and $\mu_i = X_i^T\beta$, the probability of observing $y_i$ given $X_i$ and $\beta$, the likelihood of observing the data is $L = \prod_{i=1}^{n} f(y_i|\mu_i)$, we want to maximize $L$ to get the $\beta$ that best explains the data.  
+This product is usually hard to work with, so we take the log likelihood, $l = \sum_{i=1}^{n} log(f(y_i|\mu_i))$, and we want to maximize this quantity.  
+In the case of the _gaussian distribution_, the log likelihood is $l = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ is equivalent the OLS problem, making this a generalized approach for different types of distributions.
