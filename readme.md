@@ -145,7 +145,7 @@ _A refresher on some distributions_
         |----------|---------|----------------|-------|----------------|---------|
         | f(x)     | 0       | less than max  | max   | less than max  | 0       |
         | f'(x)    | +       |      +         | 0     |      -         | -       |
-        | f''(x)   | -       |      0         | +     |      0         | -       |
+        | f''(x)   | +       |      0         | -     |      0         | +       |
 
 ![normal dist](./assets/gaussian.png)
 - The _binomial distribution_ is characterized by the probability mass function $f(y) = \binom{n}{y}p^y(1-p)^{n-y}$, where $n$ is the number of trials, $y$ is the number of successes, and $p$ is the probability of success. The binomial distribution is used to model the _number of successes_ in a _fixed number of trials_ 
