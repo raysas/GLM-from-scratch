@@ -2,8 +2,10 @@
 
 This is a python implementation of _Generalized Linear Models_ inspired by the theoretical material taken in a _Multivariate Statistics_ course and built based on _object-oriented programming_ design principles. Sources:  
 - [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) by Hastie, Tibshirani, and Friedman  
+- [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) by James, Witten, Hastie, and Tibshirani
 - [Introduction to Generalized Linear Models]() by Dobson and Barnett   
-- [Linear Models with R]() by Faraway
+- [Linear Models with R]() by Faraway   
+- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) by Meerkat Statstics on youtube
 
 ## Design
 
@@ -33,7 +35,7 @@ GLM-from-scratch/
 
 ### UML Diagram
 
-_uunder construction_
+_under construction_
 
 ## Some theory and concepts
 
@@ -56,16 +58,15 @@ In regular linear models, can use _Least Squares_ or _Maximum Likelihood Estimat
 | $\mu_i = X_i^T\beta$ | $g(\mu_i) = X_i^T\beta$ |
 | solved by OLS and MLE | solved by MLE |
 
-
-**Least Squares**: Optimization problem where we wanna minimize the sum of squared residuals, $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$, where $\hat y_i = X_i^T\beta$; solved by differentiating and equating to 0.  
-**Maximum Likelihood**: Assuming some distribution on $y$, in LM $y \sim N(\mu, \sigma^2)$, where $\mu_i = X_i^T\beta$ sometimes $\mu_i$ will be above and sometimes below the line.  
+In linear models, estimating the parameters come from solving one of these optimization problems:  
+- **Least Squares**: Optimization problem where we wanna minimize the sum of squared residuals, $min \sum_{i=1}^{n} (y_i - \hat y_i)^2$, where $\hat y_i = X_i^T\beta$; solved by differentiating and equating to 0. 
+- **Maximum Likelihood**: Assuming some distribution on $y$, in LM $y \sim N(\mu, \sigma^2)$, where $\mu_i = X_i^T\beta$ sometimes $\mu_i$ will be above and sometimes below the line.  
 Probability of obtaining that $y_i$ is $ \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}}$, we want to maximize this probability (choose the $\beta's$ that do), so we take the log likelihood, it's be a ***sum*** of the logs:  
-$l(\beta) = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}})= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$, so the goal is to maximize this quantity  
+$l(\beta) = \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-\mu_i)^2}{2\sigma^2}})= \sum_{i=1}^{n} log(\frac{1}{\sqrt{2\pi\sigma^2}}) - \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$  
+The goal is to maximize this quantity  
 $\iff$ maximize $- \sum_{i=1}^{n} \frac{(y_i-\mu_i)^2}{2\sigma^2}$ WHICH IS  
 $\iff$ minimize $\sum_{i=1}^{n} (y_i - \mu_i)^2$  
 $\iff$ minimize the sum of squared residuals (same as OLS).
-
-In linear models: 
 
 | Least Squares | Maximum Likelihood |
 |---------------|--------------------|
@@ -88,12 +89,32 @@ In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be 
 
 What distinguishes GLM from the linear model is the ___link function___ that connects the linear predictor to the expected value of the response variable.  
 The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
-The link function is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _binomial distribution_, the link function is the _logit function_.
+The link function is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _Bernoulli distribution_, the link function is the _logit function_.
 
-Another important concept in GLM is the ___loss function___, which is a function that measures the difference between the predicted value and the actual value of the response variable. The loss function is used to estimate the coefficients of the model by minimizing the difference between the predicted value and the actual value of the response variable. It's usually chosen based on the distribution of $y$, for example, in the case of the _gaussian distribution_, the loss function is the _squared error function_, while for the _binomial distribution_, the loss function is the _log loss function_ (not going to dive deep in it, but it's the negative log likelihood of the observed data given the model).  
+| LM | GLM |
+|----|-----|
+| $\mu_i = X_i^T\beta$ ($g(\mu_i)=\mu_i$) | $g(\mu_i) = X_i^T\beta$ |
+
+![link function](./assets/linkfunc.png)
+
+This link function hass to be ___monotonic___ (so that the relationship between the predictors and the response variable is preserved),
+___differentiable___ (so that we can estimate the coefficients of the model),
+and ___invertible___ (so that we can get back to the mean from the linear predictor).
+
+In the case of binary regression, it's the Bernoulli distribution with some probability p:  
+$y_i \sim Bernoulli(p)$, $E(y_i) = \mu_i = p_i$, and we want p to be between 0 and 1, so the most common link function is the _logit function_ $logit(\mu_i) = log(\frac{\mu_i}{1-\mu_i}) = X_i^T\beta$;  where $\mu_i \in [0,1]$, $logit(\mu_i) \in \mathbb{R}$
+$\iff \frac{\mu_i}{1-\mu_i} = e^{X_i^T\beta}$,   
+$\iff \mu_i = \frac{e^{X_i^T\beta}}{1+e^{X_i^T\beta}} = \frac{1}{1+e^{-X_i^T\beta}}$    
+$\iff \mu_i = \sigma(X_i^T\beta)$, where $\sigma$ is the sigmoid function.  
+
+a link function is not a transformation of the response variable, only the $\mu$ is tranformed.
+
+
+
+Another important concept in GLM is the ___loss function___, which is a function that measures the difference between the predicted value and the actual value of the response variable. The loss function is used to estimate the coefficients of the model by minimizing the difference between the predicted value and the actual value of the response variable. It's usually chosen based on the distribution of $y$, for example, in the case of the _gaussian distribution_, the loss function is the _squared error function_, while for the _binomial distribution_, the loss function is the _log loss function_ (not going to dive deep in it, but it's the negative log likelihood of the observed data given the model).  This is seen in the MLE problem where we want to maximize the likelihood of the observed data given the model, which is equivalent to minimizing the loss function.
 
 In each model, the coefficients are estimated by minimizing the loss function. The linear model uses _Ordinary Least Squares_ (OLS) to estimate the coefficients, while the logistic and poisson models use _Maximum Likelihood Estimation_ (MLE) to estimate the coefficients. The coefficients are estimated by maximizing the likelihood of the observed data given the model. The ***likelihood*** is a function of the coefficients and is maximized by finding the coefficients that maximize the likelihood of the observed data.   
-So our goal is to get the $\beta$ that optimizes the performance of the model, i.e. minimizes the loss function or maximizes the likelihood function.
+So our goal is to get the $\beta$ that optimizes the performance of the model, i.e. minimizes the loss function or maximizes the likelihood function. (_loss function is the negative log likelihood_)
 
 ### _Evaluating the model:_  
 
