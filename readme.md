@@ -94,7 +94,7 @@ In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be 
 3 main assumptions in linear models:  
 1) [residuals _i.i.d_](#1-residual-assumption)  
 2) [X is full rank](#rank-assumption)  
-3)   
+3) [influential points]()  
 
 #### 1. residual assumption
 (1) This was based on 3 assumptions:  
