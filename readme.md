@@ -1,11 +1,10 @@
 # Generalized Linear Models library from scratch
 
-This is a python implementation of _Generalized Linear Models_ inspired by the theoretical material taken in a _Multivariate Statistics_ course and built based on _object-oriented programming_ design principles. Sources:  
-- [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) textbook by Hastie, Tibshirani, and Friedman  
-- [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) textbook by James, Witten, Hastie, and Tibshirani
-- [Introduction to Generalized Linear Models]() textbook by Dobson and Barnett   
-- [Linear Models with R]() textbook by Faraway   
-- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics
+This is a python implementation of _Generalized Linear Models_ inspired by the theoretical material taken in a _Multivariate Statistics_ course and built based on _object-oriented programming_ design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient oop design and write python packages
+
+## Table of Contents
+
+## Installation
 
 ## Design
 
@@ -45,16 +44,7 @@ _beware some math and stats ahead :p_
 
 ### Main ideas:
 
-Linear models were concieved originally by Gauss in the aim of finding a relationship between a response variable $y$ and explanatory variables $X$. This was based on 3 assumptions:  
-- $\epsilon_i$ are independent (ensures that $\hat\beta$ are unbiased estimators of the true coefficients by having $\mathbb{E}(\epsilon) =0 \iff \mathbb{E}(y) = X\beta$), this makes the off-diagonal elements of the covariance matrix of $\hat\beta$ to be 0
-- $\epsilon_i$ are identically distributed (ensures that the variance of the residuals is constant, and it's $\sigma^2$)  
-- $\epsilon \sim N(0, \sigma^2)$ (ensures that the residuals are normally distributed)  
-
-So i.i.d $\epsilon \sim N(0, \sigma^2)$ with this covariance matrix:  
-$\begin{bmatrix} \sigma^2 & 0 & 0 & \cdots & 0 \\ 0 & \sigma^2 & 0 & \cdots & 0 \\ 0 & 0 & \sigma^2 & \cdots & 0 \\ \vdots & \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & 0 & \cdots & \sigma^2 \end{bmatrix}$
-
-This is mind, $\epsilon$ is the only random variable in the model, $X$ and $\beta$ are fixed, so the distribution of $y$ is normal, $y \sim N(\mu, \sigma^2)$, where $\mu = X\beta$.
-
+Linear models were concieved originally by Gauss in the aim of finding a relationship between a response variable $y$ and explanatory variables $X$. 
 - $y$ are independent
 - $y$ are normally distributed with a mean $\mu$ so $y_i \sim N(\mu_i, \sigma^2)$  
 - $\mu_i = X_i^T\beta$, the mean $\mu$ are related to the predictors $X$ by a linear model (linear in the parameters $\beta$, the $X$ can be transformed)
@@ -97,9 +87,28 @@ Hence, the model is defined as $y = f(X\beta) + \epsilon$, where $f$ is a link f
 
 The parameters of the model are estimated by maximizing the likelihood of the observed data given the model. The likelihood is a function of the coefficients and is maximized by differentiating and equating to 0. This is equivalent to minimizing the loss function, which is a function that measures the difference between the predicted value and the actual value of the response variable (litteraly, negative log likelihood). The model is usually evaluated by deviance, a measure of the goodness of fit of the model and is used to compare the performance of different models.
 
-### Linear Models, Least Squares, and Residuals
+### Linear Models
 
-In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be normally distributed, indpendent and homoscedastic: $\epsilon \sim N(0, \sigma^2)$. The linear model is a special case of the GLM, where the response variable follows a gaussian distribution.  
+In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be normally distributed, indpendent and homoscedastic: $\epsilon \sim N(0, \sigma^2)$. The linear model is a special case of the GLM, where the response variable follows a gaussian distribution.   
+
+3 main assumptions in linear models:  
+1) [residuals _i.i.d_](#1-residual-assumption)  
+2) [X is full rank](#rank-assumption)  
+3)   
+
+#### 1. residual assumption
+(1) This was based on 3 assumptions:  
+- $\epsilon_i$ are independent (ensures that $\hat\beta$ are unbiased estimators of the true coefficients by having $\mathbb{E}(\epsilon) =0 \iff \mathbb{E}(y) = X\beta$), this makes the off-diagonal elements of the covariance matrix of $\hat\beta$ to be 0
+- $\epsilon_i$ are identically distributed (ensures that the variance of the residuals is constant, and it's $\sigma^2$)  
+- $\epsilon \sim N(0, \sigma^2)$ (ensures that the residuals are normally distributed)  
+
+So i.i.d $\epsilon \sim N(0, \sigma^2)$ with this covariance matrix:  
+
+$\begin{bmatrix} \sigma^2 & 0 & 0 & \cdots & 0 \\ 0 & \sigma^2 & 0 & \cdots & 0 \\ 0 & 0 & \sigma^2 & \cdots & 0 \\ \vdots & \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & 0 & \cdots & \sigma^2 \end{bmatrix}$
+
+This is mind, $\epsilon$ is the only random variable in the model, $X$ and $\beta$ are fixed, so the distribution of $y$ is normal, $y \sim N(\mu, \sigma^2)$, where $\mu = X\beta$.
+
+#### Least Squares
 
 Let $V$ be the space of X, $X\gamma \in V$, and $y$ is a vector in $\mathbb{R}^n$.  
 The least squares approach allows to get the $\hat y(=X\hat\beta)$ that minimizes the distance between $y$ and $X$ (the projection of $y$ onto the space of $X$), in other words, we're searching for the $\hat\beta$ from $argmin_{\gamma} \sum_{i=1}^{n} (y_i - X_i^T\gamma)^2$ (the $\gamma$ that minimizes the sum of squared residuals).  
@@ -118,6 +127,8 @@ Enters the _normal equation_ that gives us the $\hat \beta$ that minimizes the R
 So $E(y|X,\beta) = X\beta = X(X^TX)^{-1}X^Ty = Hy$,  
 where $H = X(X^TX)^{-1}X^T$ is the _hat matrix_ (orthogonal projection) that projects $y$ onto the space of $X\beta$.
 
+#### 2. rank assumption
+
 $\hat \beta = (X^TX)^{-1}X^Ty$ is true $iff$ $X^TX$ is invertible, and $X$ is full rank, which is the case when the predictors are linearly independent. So can conclude 2 clear scenarios where this isn't met:  
   
 - $p>n$, we have more predictors than observations, so we can't estimate the coefficients, the rank of $X \lt p$ thus $X^TX$ is not invertible  
@@ -130,6 +141,8 @@ To deal with the 2nd case, we can either remove colinear predictors or (do smtg 
 - perform several Linear regressions between predictors and check the $R^2$ values, if they are close to 1. i.e., try to explain one predictor with the others, the model that shows a near 1 $R^2$ means that this predictor is very well explained by the others, it's a linear combination of them thus it's a good candidate to be removed. (e.g., explain x1 by x2 & x3, then x2 by x1 & x3, then x3 by x1 & x2, check for $R^2$ values)   
 VIF (Variance Inflation Factor) is used here, as $VIF = \frac{1}{1-R^2}$, when $R^2 \approx 1$, then $VIF \approx \infty$, and when $R^2 \approx 0$, then $VIF \approx 1$ (compute a VIF for each predictor)
 
+
+### Evaluation
 _But what is $R^2$ ?_
 
 Some definitions:
@@ -270,3 +283,17 @@ _note on density vs mass_:
 ### Hypothesis Testing
 
 ### Multiple Testing Correction
+
+## End notes
+
+Sources:  
+- [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) textbook by Hastie, Tibshirani, and Friedman  
+- [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) textbook by James, Witten, Hastie, and Tibshirani
+- [Introduction to Generalized Linear Models]() textbook by Dobson and Barnett   
+- [Linear Models with R]() textbook by Faraway   
+- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics
+- [StatQuest](https://www.youtube.com/c/joshstarmer) youtube channel by Josh Starmer (amazingness)  
+- [Data Science Methods and Statistical Learning](https://www.youtube.com/playlist?list=PLSkGXOii6-CRlwmik1l1h9pG4Uuq0TgeT) - U Toronto by Prof. Samin Aref (particularily MT correction)
+
+Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
+Licensed by the [MIT License](./LICENSE.md).  
