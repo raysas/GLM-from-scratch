@@ -141,6 +141,28 @@ To deal with the 2nd case, we can either remove colinear predictors or (do smtg 
 - perform several Linear regressions between predictors and check the $R^2$ values, if they are close to 1. i.e., try to explain one predictor with the others, the model that shows a near 1 $R^2$ means that this predictor is very well explained by the others, it's a linear combination of them thus it's a good candidate to be removed. (e.g., explain x1 by x2 & x3, then x2 by x1 & x3, then x3 by x1 & x2, check for $R^2$ values)   
 VIF (Variance Inflation Factor) is used here, as $VIF = \frac{1}{1-R^2}$, when $R^2 \approx 1$, then $VIF \approx \infty$, and when $R^2 \approx 0$, then $VIF \approx 1$ (compute a VIF for each predictor)
 
+### Logistic Models 
+
+$y$ ~ $B(1, \pi(X_i))$, is a Bernoulli random variable, where $\pi(X_i)$ is the probability of success given $X_i$.
+
+#### Statistical tests:  
+
+**Testing the significance of a coefficient**:  
+- _Null hypothesis_: the coefficient is not significant, $H_0: \beta^*_j = 0$   
+- _Alternative hypothesis_: the coefficient is significant, $H_1: \beta^*_j \neq 0$
+- Test statistic $T_n = \frac{\hat \beta_j}{\hat S(\hat \beta_j)}$, converging to a standard normal distribution $N(0,1)$ as $n \to \infty$;- it's in fact a z-score, and it follows a t-distribution with $n-p-1$ degrees of freedom.  
+- Wald test (Student)  
+
+**Comparing nested models**:  
+Given $M_q$ and $M_{q-1}$ where $M_q$ has $q$ predictors (full) and $M_{q'}$ has $q'$ predictors (reduced nested model), we can compare the performance of the two models by performing an _anova_ test. Let $\sigma^2*$ be the variance of the residuals of the big model $M_q$, and $\sigma^2$ be the variance of the residuals of the smaller model $M_{q'}$.  
+- _Null hypothesis_: the simpler model $M_{q'}$ is better, $H_0: \sigma^2 = \sigma^2*$ (as if the added predictors are not significant)  
+- _Alternative hypothesis_: the full model $M_q$ is better, $H_1: \sigma^2 \lt \sigma^2*$ (for the nested model)   
+- Test statistic is the likelihood ratio test, $LR = -2(log(L(M_{q'})) - log(L(M_q)))$, which follows a chi-squared distribution with $q-q'$ degrees of freedom.  
+- Devian test (F-test)
+
+#### Evaluation  
+
+
 
 ### Evaluation
 _But what is $R^2$ ?_
@@ -177,6 +199,8 @@ This product is usually hard to work with, so we take the log likelihood, $l = \
 
 
 ### Link functions and loss functions: 
+
+_The link function arises from ML_
 
 What distinguishes GLM from the linear model is the ___link function___ that connects the linear predictor to the expected value of the response variable.  
 The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
@@ -224,6 +248,53 @@ Evaluating the performance of a model, we often care to see which predictors are
 We can compare between models and nested models by _anova_ which comes to compare the deviance of the models. The _deviance_ is a measure of the goodness of fit of the model and is used to compare the performance of different models. Other measures of goodness of fit include the _AIC_ and _BIC_, and even $R^2$, _odd ratios_, and _incident rate ratios_ are used to evaluate the performance of the model.
 
 ### Regularization
+
+_Motivation:_  
+When validating the full rank assumption, if $p>n$, X becomes singular $\implies$ $X^TX$ is not invertible, so we can't estimate the coefficients :/  
+Even if p is not greater than n but is close to it, teh huge number of predictors increases teh variance of the model and makes the statistical tests less powerful. there are variable selection algorithms for that but with $2^p$ possible models to compare, it's computationally expensive.
+So that is a problem.  
+
+Starting from a classical linear model, we can add a penalty term to the loss function to prevent overfitting, this is called _regularization_.
+
+classical:  
+$$ RSS = (y - X\beta)^T(y - X\beta)$$  
+$$ \hat \beta = (X^TX)^{-1}X^Ty$$  
+
+Penalized (ridge example):  
+$$ RSS(\lambda) = (y - X\beta)^T(y - X\beta) + \lambda \beta^T\beta$$  
+
+
+
+#### Ridge
+
+So in other words:   
+$\sum \beta_j^2 \leq t$ is the constraint, and the solution is the $\beta$ that minimizes the RSS, so the solution is the $\beta$ that minimizes the RSS and satisfies the constraint.
+
+$$RSS(\lambda) = (y - X\beta)^T(y - X\beta) + \lambda \sum_{j=1}^{p} \beta_j^2 $$  
+$$\hat \beta^{ridge} = argmin_{\beta} RSS(\lambda)=  argmin_{\beta} \sum_{i=1}^{n} (y_i - X_i^T\beta)^2 + \lambda \sum_{j=1}^{p} \beta_j^2$$  
+
+
+$\lambda$ is the penalty term, and it's a hyperparameter that controls the amount of regularization applied to the model. When $\lambda = 0$, the model is equivalent to the classical linear model, and when $\lambda \to \infty$, the coefficients of the model are shrunk towards zero.  
+
+Now the formula mentioned above for linear models can be generalized by using negative log likelihood instead of least squares:  
+$$\hat \theta^{ridge} = argmin_{\theta} -log(L(\theta)) + \lambda \sum_{j=1}^{p} \theta_j^2$$
+
+
+#### Lasso  
+
+The lasso is another type of regularization that uses the L1 norm of the coefficients as the penalty term (absolute values of teh estimates). The lasso is used to perform variable selection by setting some of the coefficients to zero. In practice this is the main difference between the lasso and ridge regression (considered as an advantage of the lasso).
+
+#### Elastic Net
+
+Combination of lasso and ridge  
+Norm 1 and norm 2 in penalty term, so it's a mix of the two. (associate the penalty term with a weight $\alpha$, to weight both penalties by $\alpha$ and $1-\alpha$):  
+$$RSS(\lambda) = (y - X\beta)^T(y - X\beta) + \lambda \alpha \sum_{j=1}^{p} |\beta_j| + \lambda (1-\alpha) \sum_{j=1}^{p} \beta_j^2$$  
+- if $\alpha = 0$, it's ridge  
+- if $\alpha = 1$, it's lasso  
+
+___choosing $\lambda$:___  
+- Cross validation: split the data into training and validation sets, train the model on the training set, and evaluate the performance of the model on the validation set. Repeat this process for different values of $\lambda$ and choose the value of $\lambda$ that gives the best performance on the validation set.  
+- Estimates will depend on this choice, we plot them as a function of $\lambda$ (regularization path) and choose the one that gives the best performance. Notice how the coefficients are shrunk towards zero as $\lambda$ increases.
 
 
 _Some other important concepts in statistics_  
@@ -282,7 +353,107 @@ _note on density vs mass_:
 
 ### Hypothesis Testing
 
+$H_0$: null hypothesis, default state of belief  
+$H_1$: alternative hypothesis, what we want to prove  
+
+For any statistical test we have a random variable following a random distribution(?)
+
+question of interest here: expectation of paramater estimator is 0
+
 ### Multiple Testing Correction
+
+_Motivation:_  
+When we do multiple hypotehsis tests $H_0^1, H_0^2, ..., H_0^m$, the probability of making a type I error increases with the number of tests, so we need to correct for this, _e.g., gets crazy with higher number m: 5% * 100,000 genes = 5,000 errors_.  
+
+So problem: too many type I errors.  
+
+Some terminology to note:  
+- **type I error:** rejecting a true null hypothesis when it's true $\iff FP \iff False\ discovery$  
+$\alpha = P(reject\ H_0|H_0\ is\ true)$ = rate of false discoveries  
+- **type II error:** failing to reject a false null hypothesis $\iff FN$  
+- **FWER:** family-wise error rate, the probability of making at least one type I error in a family of tests  
+$FWER = P(V \ge 1)$, where $V$ is the number of false positives.   
+- **FDP:** false discovery proportion, the proportion of false positives among the rejected hypotheses  
+$FDP = \frac{V}{max(R, 1)}$, where $V$ is the number of false positives and $R$ is the number of rejected hypotheses.
+- **FDR:** false discovery rate, the expected proportion of false positives among the rejected hypotheses  
+$FDR = E(\frac{V}{R}|R>0)$, where $V$ is the number of false positives and $R$ is the number of rejected hypotheses.  
+- **Confusion table**:  
+
+|          | Accept $H_0$ | Reject $H_0$ | total |
+|----------|--------------|--------------|--|
+| $H_0$ true | U           | V=type I = FP           | $m_0$ |  
+| $H_0$ false | T=type II = FN           | S           | $m_1$ |  
+| total    | W       | R          | $m$ |   
+
+- **tolerance:** the proportion of false positives that are acceptable  
+$tolerance = \frac{V}{R}$?  
+- **power:** the probability of rejecting a false null hypothesis  
+$power = 1 - P(type II error)$  
+_it's more powerful when we make more true discoveries_
+
+Assuming tests are independent $FWER= P(V \ge 1)= 1 - P(no\ type\ I\ errors)=1 - (1-\alpha)^m$  
+Taking $\alpha=0.05$, when we plot $1 - (1-0.05)^m$, we see that it increases very fast (exponentially). Changing alpha doesn't really help as the shape of teh cruve will be the same, so we need to correct for this.
+
+![plot of the function]  
+_e.g., type I error rate $\alpha$=0.05, if we do 50 tests, the probability of making at least one type I error is $1-(1-0.05)^{50} \approx 0.92$ (near 100% chance of making a type I error in m tests)_   
+
+>> Distinguish between different types of multiplicities:  
+1-2 sample problems with m different endpoints (m=p in linear regression), this means m statistical tests for m parameters  
+k-sample problems with localized comparisons: k-1 if one control group, k(k-1)/2 if all pairwise comparisons  
+
+### Controling the FWER  
+
+> Controling means making at least one type I error in a family of tests, this will not only decrease the number of false discoveries but also the number of true discoveries (very few $H_0$ will be rejected), making the procedure too conservative for large m ($ESLII$)  
+
+***Bonferroni** (single step method)*:    
+Makes each test more stringent to make $FWER \le \alpha$, so $\alpha/m$ is the new $\alpha$ for each test.    
+It's single step because each test defines at a predefined $\alpha/m$ level, regardless of the observations (same level for the m tests) 
+
+>>> Remember $P(A \cup B) \le P(A) + P(B)$  
+$FWER = \bigcup_{i=1}^{m} P$(making type I error in test j) $\le \sum_{i=1}^{m} P$(..)  
+with $\sum_{i=1}^{m} P$(making type I error in test j) = 
+$\alpha/m + \alpha/m + ... + \alpha/m = \alpha$  
+Hence, $FWER \le \alpha$
+
+***Holm** (stepwise: step-down method)*:  
+Also guarantees $FWER \le \alpha$, BUT it's more powerful than Bonferroni (allows for more discoveries - at least as many as Bonferroni)  
+
+1. sort p-values from smallest to largest, $p_{(1)} \le p_{(2)} \le ... \le p_{(m)}$  
+2. compare $p_{(j)}$ with $\alpha/(m-j+1)$  
+3. reach index $i$ where $p_{(i)} \gt \alpha/(m-i+1) \implies$ fail to reject  
+4. All remaining p-values are also failed to reject  
+
+It's called step-down because the denominator is decreasing in each step (starting with a large set of hypothesis that's going down). It ensures that all tests that would be rejected by Bonferroni are also rejected by Holm. It is a strong control (i.e., it's conservative) but it's more powerful than Bonferroni.
+
+![bonferroni & holm index vs sorted pval plot]
+
+***Hochberg** (step-up method)*:  
+Also guarantees $FWER \le \alpha$, BUT it's way more powerful than Bonferroni & Holm, HOWEVER, its main drawback is it relying on a strong assumption that the tests are independent (there is a cost for this power).    
+
+_Same principle but starts from the largest p-value and goes down_  
+1. sort p-values from largest to smallest, $p_{(m)} \ge p_{(m-1)} \ge ... \ge p_{(1)}$  
+3. compare $p_{(m)}$ with $\alpha$:  
+    a. if $p_{(m)} \le \alpha$, reject all $H_0$  
+    b. else compare $p_{(m-1)}$ with $\alpha/2$  
+    c. continue until $p_{(m-i+1)} \le \alpha/i$   
+
+### Controling the FDR  
+
+_Here we have a different guarantee, we want to control the proportion of false discoveries among the rejected hypotheses_  
+As said previously, FWER is too conservative for large m, we might not have any discoveries at all. In some contexts (liek GWAS), we want to get some discoveries and experiment with them, so we need a less conservative method, enters FDR.  
+
+again by definition: $FDR = E(\frac{V}{R or 1})$, where $V$ is the number of false positives and $R$ is the number of rejected hypotheses.  
+We're controling the rate of false discoveries to be less than alpha rather than the probability of making at least one error in m tests (FWER) < $\alpha$ (we might take $\alpha$ to be something liek 10 or 20%)  
+_In a programming context $FDR=\frac{FP}{FP+TP}$ and $precision=\frac{TP}{TP+FP}$, so $FDR=1-precision$._  
+
+***Benjamini-Hochberg** (step-up method)*:  
+1. sort p-values from smallest to largest, $p_{(1)} \le p_{(2)} \le ... \le p_{(m)}$  
+2. find the largest index $i$ such that $p_{(i)} \le \frac{i}{m}\alpha$  
+3. reject all $H_0^j$ for $j \le i$  
+
+![plot comparing curves with FWER approaches]
+
+
 
 ## End notes
 
