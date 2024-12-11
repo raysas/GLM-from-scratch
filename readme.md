@@ -77,6 +77,8 @@ $\iff$ minimize the sum of squared residuals (same as OLS).
 
 ![ML in LM](./assets/max_likelihood.png)
 
+check [here](https://www.youtube.com/watch?v=WCP98USBZ0w) for more comparisons.
+
 
 
 ### Generalized Linear Models (GLM):
@@ -319,6 +321,8 @@ $Var(AX) = A\Sigma A^T$, this is a property of the covariance matrix, it's invar
 
 ![cov between 2 vars]
 
+see [this](https://www.youtube.com/watch?v=ekZQthaCrfU)
+
 
 ### Probability distributions
 
@@ -462,9 +466,11 @@ Sources:
 - [Introduction to Statistical Learning](https://hastie.su.domains/ISLR/) textbook by James, Witten, Hastie, and Tibshirani
 - [Introduction to Generalized Linear Models]() textbook by Dobson and Barnett   
 - [Linear Models with R]() textbook by Faraway   
-- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics
+- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics  
+- [MIT 18.065: Matrix Methods in Data Analysis, Signal Processing, and Machine Learning](https://www.youtube.com/playlist?list=PLUl4u3cNGP63oMNUHXqIUcrkS2PivhN3k), lectures on youtube by Prof. Gilbert Strang for linear algebra
 - [StatQuest](https://www.youtube.com/c/joshstarmer) youtube channel by Josh Starmer (amazingness)  
-- [Data Science Methods and Statistical Learning](https://www.youtube.com/playlist?list=PLSkGXOii6-CRlwmik1l1h9pG4Uuq0TgeT) - U Toronto by Prof. Samin Aref (particularily MT correction)
+- [Data Science Methods and Statistical Learning](https://www.youtube.com/playlist?list=PLSkGXOii6-CRlwmik1l1h9pG4Uuq0TgeT) - U Toronto by Prof. Samin Aref (particularily MT correction)  
+- [DataMListic](https://www.youtube.com/@datamlistic) youtube channel, particulalry for gaussian distribution
 
 Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
 Licensed by the [MIT License](./LICENSE.md).  
