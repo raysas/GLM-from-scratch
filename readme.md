@@ -4,7 +4,7 @@
 
 <img align="right" src="./assets/Rsq-projection-2.png" width="40%">
 
-<em><b>This is a Python implementation of Generalized Linear Models</b>, inspired by the theoretical material taken in a <i>Multivariate Statistics</i> course and built based on <i>object-oriented programming</i> design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient OOP design, and write Python packages.</em>
+<em><b>This is a Python implementation of Generalized Linear Models</b>, inspired by the theoretical material taken in a <i>Multivariate Statistics</i> course and built based on <i>object-oriented programming</i> design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient OOP design, and write Python packages</em>
 
 > _"Matrices act. They don't just sit there."_  
 > ― Gilbert Strang
@@ -152,7 +152,15 @@ In a linear model, $y = X\beta + \epsilon$, and the error term is assumed to be 
 
 So i.i.d $\epsilon \sim N(0, \sigma^2)$ with this covariance matrix:  
 
-$\begin{bmatrix} \sigma^2 & 0 & 0 & \cdots & 0 \\ 0 & \sigma^2 & 0 & \cdots & 0 \\ 0 & 0 & \sigma^2 & \cdots & 0 \\ \vdots & \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & 0 & \cdots & \sigma^2 \end{bmatrix}$
+$$
+\begin{bmatrix} 
+\sigma^2 & 0 & 0 & \cdots & 0 \\  
+0 & \sigma^2 & 0 & \cdots & 0 \\  
+0 & 0 & \sigma^2 & \cdots & 0 \\  
+\vdots & \vdots & \vdots & \ddots & \vdots \\  
+0 & 0 & 0 & \cdots & \sigma^2  
+\end{bmatrix}
+$$
 
 This is mind, $\epsilon$ is the only random variable in the model, $X$ and $\beta$ are fixed, so the distribution of $y$ is normal, $y \sim N(\mu, \sigma^2)$, where $\mu = X\beta$.
 
@@ -525,5 +533,9 @@ Sources:  Prof. Gilbert Strang for linear algebra
 
 
 
-Licensed by the [MIT License](./LICENSE.md).Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  - [DataMListic](https://www.youtube.com/@datamlistic) youtube channel, particulalry for gaussian distribution- [Data Science Methods and Statistical Learning](https://www.youtube.com/playlist?list=PLSkGXOii6-CRlwmik1l1h9pG4Uuq0TgeT) - U Toronto by Prof. Samin Aref (particularily MT correction)  - [StatQuest](https://www.youtube.com/c/joshstarmer) youtube channel by Josh Starmer (amazingness)  - [MIT 18.065: Matrix Methods in Data Analysis, Signal Processing, and Machine Learning](https://www.youtube.com/playlist?list=PLUl4u3cNGP63oMNUHXqIUcrkS2PivhN3k), lectures on youtube by Prof. Gilbert Strang for linear algebra- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics  Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
+Licensed by the [MIT License](./LICENSE.md).Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  - [DataMListic](https://www.youtube.com/@datamlistic) youtube channel, particulalry for gaussian distribution- [Data Science Methods and Statistical Learning](https://www.youtube.com/playlist?list=PLSkGXOii6-CRlwmik1l1h9pG4Uuq0TgeT) - U Toronto by Prof. Samin Aref (particularily MT correction)  - [StatQuest](https://www.youtube.com/c/joshstarmer) youtube channel by Josh Starmer (amazingness)  - [MIT 18.065: Matrix Methods in Data Analysis, Signal Processing, and Machine Learning](https://www.youtube.com/playlist?list=PLUl4u3cNGP63oMNUHXqIUcrkS2PivhN3k), lectures on youtube by Prof. Gilbert Strang for linear algebra- [Generalized Linear Models (GLM's)](https://www.youtube.com/playlist?list=PLJ71tqAZr197DkSiGT7DD9dMYxkyZX0ti) youtube playlist by Meerkat Statstics  
+
+Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
+
+_Library design and optimization is under construction_  
 Licensed by the [MIT License](./LICENSE.md).  
