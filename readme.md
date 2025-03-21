@@ -257,7 +257,10 @@ This product is usually hard to work with, so we take the log likelihood, $l = \
 - _poisson distribution_, the log likelihood is $l = \sum_{i=1}^{n} y_i log(\mu_i) - \mu_i$ and $\mu_i$ here is the $\lambda$ parameter of the poisson distribution so $\mu_i = e^{X_i^T\beta}$ and y is the number of events in a fixed interval of time.
 
 The linear predictor is defined as $ \eta = X\beta$, where $\beta$ is a $(p \times 1)$ column vector of coefficients. The link function is a function $g$ such that $g(\mu) = \eta$, where $\mu$ is the expected value of the response variable. 
-### Link functions and loss functions: ction is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _Bernoulli distribution_, the link function is the _logit function_.
+
+### Link functions and loss functions: 
+
+function is chosen based on the distribution of the response variable. For example, in the case of the _gaussian distribution_, the link function is the _identity function_, while for the _Bernoulli distribution_, the link function is the _logit function_.
 
 _The link function arises from ML_
 
