@@ -1,3 +1,6 @@
-glm/
+# glm/
 tests/
-"textbooks/Handbook of Parametric and Nonparametric Statistical Procedures.pdf"
+data/
+glm/bernoulli.py
+glm/metrics.py
+glm/loss.py
