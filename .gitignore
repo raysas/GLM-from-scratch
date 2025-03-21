@@ -1,5 +1,6 @@
 # glm/
-tests/
+tests
+*.ipynb
 data/
 glm/bernoulli.py
 glm/metrics.py

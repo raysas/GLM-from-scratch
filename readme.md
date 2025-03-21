@@ -2,10 +2,14 @@
 
 <!-- This is a python implementation of _Generalized Linear Models_ inspired by the theoretical material taken in a _Multivariate Statistics_ course and built based on _object-oriented programming_ design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient oop design and write python packages -->
 
-<div style="display: flex; align-items: center;">
-    <p style="flex: 1;">This is a python implementation of <b>Generalized Linear Models</b> inspired by the theoretical material taken in a <i>Multivariate Statistics</i> course and built based on <i>object-oriented programming</i> design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient oop design and write python packages</p>
-    <img src="./assets/Rsq-projection-2.png" alt="overview" style="flex: 1; max-width: 40%; height: auto;">
-</div>
+<img align="right" src="./assets/Rsq-projection-2.png" width="40%">
+
+<em><b>This is a Python implementation of Generalized Linear Models</b>, inspired by the theoretical material taken in a <i>Multivariate Statistics</i> course and built based on <i>object-oriented programming</i> design principles. It's made as an attempt to understand the statistical concepts behind GLM, practice efficient OOP design, and write Python packages.</em>
+
+> _"Matrices act. They don't just sit there."_  
+> ― Gilbert Strang
+
+
 
 <!-- 
 ## Table of Contents
