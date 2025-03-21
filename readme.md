@@ -7,7 +7,8 @@
     <img src="./assets/Rsq-projection-2.png" alt="overview" style="flex: 1; max-width: 40%; height: auto;">
 </div>
 
-<!-- ## Table of Contents
+<!-- 
+## Table of Contents
 
 - [Installation](#installation)
 - [Design](#design)
@@ -44,9 +45,9 @@ glm-from-scratch
 │   ├── linear.py
 │   └── models.py
 └── readme.md 
-```
+``` 
 
-<!-- The library is structured in the following way:
+ The library is structured in the following way:
 ```text
 GLM-from-scratch/
 │
@@ -66,18 +67,18 @@ GLM-from-scratch/
 ├── .gitignore
 ├── LICENSE
 └── README.md   
-``` -->
+```
 
 ### UML Diagram
 
-_under construction_
+<!-- _under construction_
 ```mermaid
 graph TD
-    A[GLM] --> B[LinearModel]
-    A --> C[LogisticModel]
-    A --> D[PoissonModel]
-``` -->
-
+    A[GLM] -> B[LinearModel]
+    A -> C[LogisticModel]
+    A -> D[PoissonModel]
+``` 
+-->
 
 ## Some theory and concepts
 
